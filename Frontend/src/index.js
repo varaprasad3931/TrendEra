@@ -8,6 +8,7 @@ import { CartProvider } from "./context/CartContext";
 import "./assets/styles/global.css";
 import "./assets/styles/navbar.css";
 import "./assets/styles/product.css";
+import "./assets/styles/support.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root")

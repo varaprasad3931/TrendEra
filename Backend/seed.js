@@ -17,40 +17,77 @@ const categoriesData = [
   { name: "accessories", description: "Bags, watches, jewelry, and more" }
 ];
 
+const Review = require("./models/Review");
+
 const generateProducts = (categoriesMap) => {
     const products = [];
     
-    // Original curated products with galleries and features
+    // Original curated products with galleries, videos, and features
     products.push(
         { 
             name: "Nike Running Shoes", 
-            description: "High-performance running shoes designed for ultimate comfort and durability.", 
+            description: "High-performance running shoes designed for ultimate comfort and durability. Featuring advanced responsive cushioning and premium breathable mesh, they are built for both professional runners and casual wear.", 
             price: 2999, 
             image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600",
             images: [
                 "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600",
                 "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
-                "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600"
+                "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600",
+                "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=600"
+            ],
+            videos: [
+                "https://assets.mixkit.co/videos/preview/mixkit-running-shoes-in-slow-motion-40337-large.mp4"
             ],
             features: ["Breathable mesh upper", "Responsive foam midsole", "Durable rubber outsole", "Lightweight design"],
+            specifications: [
+                { group: "General", name: "Brand", value: "Nike" },
+                { group: "General", name: "Type", value: "Running Shoes" },
+                { group: "General", name: "Color", value: "Red/Black/White" },
+                { group: "Product Details", name: "Outer Material", value: "Premium Mesh" },
+                { group: "Product Details", name: "Sole Material", value: "Durable Rubber" },
+                { group: "Product Details", name: "Closure", value: "Lace-Up" },
+                { group: "Product Details", name: "Weight", value: "280g (Single Shoe)" },
+                { group: "Warranty", name: "Warranty Summary", value: "1 Year Brand Warranty against Manufacturing Defects" }
+            ],
             category: categoriesMap["shoes"], stock: 15, averageRating: 4.5 
         },
         { 
             name: "iPhone 15 Pro", 
-            description: "The latest Apple iPhone featuring a titanium design, powerful A17 Pro chip, custom Action button, and a pro-class camera system.", 
+            description: "The latest Apple iPhone featuring a titanium design, powerful A17 Pro chip, custom Action button, and a pro-class camera system. Elevate your photography and gaming experiences to professional levels.", 
             price: 79999, 
             image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",
             images: [
                 "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",
                 "https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=600",
-                "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600"
+                "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600",
+                "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600"
+            ],
+            videos: [
+                "https://assets.mixkit.co/videos/preview/mixkit-hands-holding-smartphone-42231-large.mp4"
             ],
             features: ["A17 Pro chip with 6-core GPU", "Titanium design with Ceramic Shield front", "48MP Main camera with advanced lenses", "USB-C connector with USB 3 speeds"],
+            specifications: [
+                { group: "General", name: "Brand", value: "Apple" },
+                { group: "General", name: "Model Name", value: "iPhone 15 Pro" },
+                { group: "General", name: "Color", value: "Natural Titanium" },
+                { group: "General", name: "SIM Type", value: "Dual SIM (nano-SIM and eSIM)" },
+                { group: "Display Features", name: "Display Size", value: "15.49 cm (6.1 inch)" },
+                { group: "Display Features", name: "Resolution", value: "2556 x 1179 Pixels" },
+                { group: "Display Features", name: "Resolution Type", value: "Super Retina XDR Display" },
+                { group: "OS & Processor Features", name: "Operating System", value: "iOS 17" },
+                { group: "OS & Processor Features", name: "Processor Type", value: "A17 Pro Chip" },
+                { group: "OS & Processor Features", name: "Processor Core", value: "Hexa Core" },
+                { group: "Memory & Storage Features", name: "Internal Storage", value: "128 GB" },
+                { group: "Memory & Storage Features", name: "RAM", value: "8 GB" },
+                { group: "Camera Features", name: "Primary Camera", value: "48MP + 12MP + 12MP" },
+                { group: "Camera Features", name: "Secondary Camera", value: "12MP Front Camera" },
+                { group: "Warranty", name: "Warranty Summary", value: "1 Year Brand Warranty for Phone and 6 Months for Accessories" }
+            ],
             category: categoriesMap["mobiles"], stock: 8, averageRating: 4.8 
         },
         { 
             name: "Smart Watch Elite", 
-            description: "Monitor your fitness, heart rate, and notifications on the go. Equipped with built-in GPS and premium sports tracking.", 
+            description: "Monitor your fitness, heart rate, and notifications on the go. Equipped with built-in GPS, premium sports tracking, and an elegant AMOLED screen that shines bright even in direct sunlight.", 
             price: 2999, 
             image: "https://www.leafstudios.in/cdn/shop/files/1_1099cd20-7237-4bdf-a180-b7126de5ef3d_800x.png?v=1722230645",
             images: [
@@ -58,7 +95,25 @@ const generateProducts = (categoriesMap) => {
                 "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600",
                 "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600"
             ],
+            videos: [
+                "https://assets.mixkit.co/videos/preview/mixkit-smartwatch-on-a-mans-wrist-42247-large.mp4"
+            ],
             features: ["1.4-inch AMOLED display", "Built-in GPS tracking", "Heart rate & sleep monitoring", "5ATM water resistance", "Up to 14 days battery life"],
+            specifications: [
+                { group: "General", name: "Brand", value: "SmartEra" },
+                { group: "General", name: "Model Name", value: "Watch Elite 2" },
+                { group: "General", name: "Color", value: "Space Black" },
+                { group: "General", name: "Dial Shape", value: "Square" },
+                { group: "Display Features", name: "Display Size", value: "3.56 cm (1.4 inch)" },
+                { group: "Display Features", name: "Resolution", value: "454 x 454 Pixels" },
+                { group: "Display Features", name: "Display Type", value: "AMOLED" },
+                { group: "Battery & Connectivity", name: "Battery Life", value: "Up to 14 Days" },
+                { group: "Battery & Connectivity", name: "Bluetooth Version", value: "v5.2" },
+                { group: "Battery & Connectivity", name: "GPS", value: "Built-in GPS" },
+                { group: "Sensors", name: "Heart Rate Monitor", value: "Yes" },
+                { group: "Sensors", name: "SpO2 Sensor", value: "Yes" },
+                { group: "Warranty", name: "Warranty Summary", value: "1 Year Manufacturer Warranty" }
+            ],
             category: categoriesMap["accessories"], stock: 20, averageRating: 4.6 
         }
     );
@@ -146,6 +201,7 @@ const seedDB = async () => {
     await User.deleteMany();
     await Category.deleteMany();
     await Product.deleteMany();
+    await Review.deleteMany();
     console.log("Cleared old database records");
 
     // Seed Users
@@ -183,6 +239,47 @@ const seedDB = async () => {
     const productsData = generateProducts(categoriesMap);
     const seededProducts = await Product.insertMany(productsData);
     console.log(`Seeded ${seededProducts.length} products with multiple images and features!`);
+
+    // Seed Reviews
+    const shoesProduct = seededProducts.find(p => p.name === "Nike Running Shoes");
+    const iphoneProduct = seededProducts.find(p => p.name === "iPhone 15 Pro");
+    const watchProduct = seededProducts.find(p => p.name === "Smart Watch Elite");
+
+    if (shoesProduct && iphoneProduct && watchProduct) {
+      await Review.insertMany([
+        {
+          user: standardUser._id,
+          product: shoesProduct._id,
+          rating: 5,
+          comment: "Super comfortable running shoes. Worth every rupee! The cushioning is fantastic."
+        },
+        {
+          user: adminUser._id,
+          product: shoesProduct._id,
+          rating: 4,
+          comment: "Excellent design and grip. Breathability is good for long sessions."
+        },
+        {
+          user: standardUser._id,
+          product: iphoneProduct._id,
+          rating: 5,
+          comment: "Breathtaking speed and display. Titanium finish feels very premium and light."
+        },
+        {
+          user: adminUser._id,
+          product: iphoneProduct._id,
+          rating: 5,
+          comment: "Incredible camera quality. The zoom works beautifully and night mode is stunning."
+        },
+        {
+          user: standardUser._id,
+          product: watchProduct._id,
+          rating: 4,
+          comment: "Great smart watch. Battery lasts almost 2 weeks, GPS is very accurate."
+        }
+      ]);
+      console.log("Seeded mock reviews!");
+    }
 
     console.log("Database Seeding Completed Successfully! 🌟");
     process.exit(0);

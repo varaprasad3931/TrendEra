@@ -24,8 +24,18 @@ const productSchema = new mongoose.Schema(
         type: String
     }],
 
+    videos: [{
+        type: String
+    }],
+
     features: [{
         type: String
+    }],
+
+    specifications: [{
+        group: { type: String },
+        name: { type: String },
+        value: { type: String }
     }],
 
     category: {

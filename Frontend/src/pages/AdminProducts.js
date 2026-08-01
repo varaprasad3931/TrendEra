@@ -18,10 +18,13 @@ function AdminProducts() {
     description: "",
     price: "",
     image: "",
+    imagesStr: "",
+    videosStr: "",
     category: "",
     stock: "",
     averageRating: 4.5
   });
+  const [specificationsList, setSpecificationsList] = useState([]);
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
@@ -53,13 +56,43 @@ function AdminProducts() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Specs List Handlers
+  const handleAddSpecRow = () => {
+    setSpecificationsList([...specificationsList, { group: "General", name: "", value: "" }]);
+  };
+
+  const handleSpecChange = (index, field, value) => {
+    const updated = [...specificationsList];
+    updated[index][field] = value;
+    setSpecificationsList(updated);
+  };
+
+  const handleRemoveSpecRow = (index) => {
+    const updated = specificationsList.filter((_, i) => i !== index);
+    setSpecificationsList(updated);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Process comma-separated strings to arrays
+      const images = formData.imagesStr
+        ? formData.imagesStr.split(",").map(url => url.trim()).filter(url => url !== "")
+        : [];
+      const videos = formData.videosStr
+        ? formData.videosStr.split(",").map(url => url.trim()).filter(url => url !== "")
+        : [];
+
+      // Filter empty specifications
+      const specifications = specificationsList.filter(spec => spec.name.trim() !== "");
+
       const payload = {
         ...formData,
         price: Number(formData.price),
-        stock: Number(formData.stock)
+        stock: Number(formData.stock),
+        images,
+        videos,
+        specifications
       };
 
       if (editId) {
@@ -71,8 +104,9 @@ function AdminProducts() {
       }
       setShowForm(false);
       setEditId(null);
+      setSpecificationsList([]);
       setFormData({
-        name: "", description: "", price: "", image: "", category: "", stock: "", averageRating: 4.5
+        name: "", description: "", price: "", image: "", imagesStr: "", videosStr: "", category: "", stock: "", averageRating: 4.5
       });
       fetchData();
     } catch (err) {
@@ -87,10 +121,13 @@ function AdminProducts() {
       description: product.description,
       price: product.price,
       image: product.image,
+      imagesStr: product.images ? product.images.join(", ") : "",
+      videosStr: product.videos ? product.videos.join(", ") : "",
       category: product.category?._id || "",
       stock: product.stock,
       averageRating: product.averageRating || 4.5
     });
+    setSpecificationsList(product.specifications || []);
     setEditId(product._id);
     setShowForm(true);
   };
@@ -120,7 +157,8 @@ function AdminProducts() {
           onClick={() => {
             setShowForm(!showForm);
             setEditId(null);
-            setFormData({ name: "", description: "", price: "", image: "", category: "", stock: "", averageRating: 4.5 });
+            setSpecificationsList([]);
+            setFormData({ name: "", description: "", price: "", image: "", imagesStr: "", videosStr: "", category: "", stock: "", averageRating: 4.5 });
           }}
           className="admin-btn-primary"
         >
@@ -129,23 +167,54 @@ function AdminProducts() {
       </div>
 
       {showForm && (
-        <div className="admin-form-container">
-          <h2>{editId ? "Edit Product" : "Add New Product"}</h2>
-          <form onSubmit={handleSubmit} className="admin-form">
-            <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleInputChange} required />
-            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} rows="3" required />
-            <input type="number" name="price" placeholder="Price (₹)" value={formData.price} onChange={handleInputChange} required />
-            <input type="text" name="image" placeholder="Image URL" value={formData.image} onChange={handleInputChange} required />
+        <div className="admin-form-container" style={{ background: "#f8fafc", padding: "25px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+          <h2 style={{ marginBottom: "15px" }}>{editId ? "Edit Product" : "Add New Product"}</h2>
+          <form onSubmit={handleSubmit} className="admin-form" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleInputChange} required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} rows="3" required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            <input type="number" name="price" placeholder="Price (₹)" value={formData.price} onChange={handleInputChange} required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            <input type="text" name="image" placeholder="Main Image URL" value={formData.image} onChange={handleInputChange} required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
             
-            <select name="category" value={formData.category} onChange={handleInputChange} required>
+            <input type="text" name="imagesStr" placeholder="Additional Gallery Image URLs (comma separated)" value={formData.imagesStr} onChange={handleInputChange} style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            <input type="text" name="videosStr" placeholder="Product Video URLs (comma separated MP4 or Youtube links)" value={formData.videosStr} onChange={handleInputChange} style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            
+            <select name="category" value={formData.category} onChange={handleInputChange} required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }}>
               <option value="" disabled>Select Category</option>
               {categories.map((cat) => (
                 <option key={cat._id} value={cat._id}>{cat.name}</option>
               ))}
             </select>
             
-            <input type="number" name="stock" placeholder="Stock Quantity" value={formData.stock} onChange={handleInputChange} required />
-            <button type="submit" className="admin-btn-success">{editId ? "Update Product" : "Save Product"}</button>
+            <input type="number" name="stock" placeholder="Stock Quantity" value={formData.stock} onChange={handleInputChange} required style={{ padding: "10px", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+            
+            {/* Custom Specifications Section */}
+            <div style={{ marginTop: "10px", padding: "15px", background: "#ffffff", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+              <h4 style={{ marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                Product Specifications
+                <button type="button" onClick={handleAddSpecRow} style={{ padding: "4px 8px", background: "#2874f0", color: "white", border: "none", borderRadius: "4px", fontSize: "0.8rem", cursor: "pointer" }}>
+                  ＋ Add Spec Row
+                </button>
+              </h4>
+              
+              {specificationsList.map((spec, index) => (
+                <div key={index} style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                  <input type="text" placeholder="Group (e.g. General, Display)" value={spec.group} onChange={(e) => handleSpecChange(index, "group", e.target.value)} style={{ flex: 1, padding: "6px", fontSize: "0.85rem", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+                  <input type="text" placeholder="Spec Name (e.g. Brand, Color)" value={spec.name} onChange={(e) => handleSpecChange(index, "name", e.target.value)} required style={{ flex: 1, padding: "6px", fontSize: "0.85rem", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+                  <input type="text" placeholder="Value (e.g. Apple, Blue)" value={spec.value} onChange={(e) => handleSpecChange(index, "value", e.target.value)} required style={{ flex: 1.5, padding: "6px", fontSize: "0.85rem", borderRadius: "4px", border: "1px solid #cbd5e1" }} />
+                  <button type="button" onClick={() => handleRemoveSpecRow(index)} style={{ padding: "0 8px", background: "#d32f2f", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
+                    ✖
+                  </button>
+                </div>
+              ))}
+              
+              {specificationsList.length === 0 && (
+                <p style={{ color: "#878787", fontSize: "0.85rem", textAlign: "center", padding: "10px 0" }}>No custom specs added. Category defaults will be used.</p>
+              )}
+            </div>
+
+            <button type="submit" className="admin-btn-success" style={{ padding: "12px", background: "#388e3c", color: "white", border: "none", borderRadius: "4px", fontSize: "1rem", fontWeight: "600", cursor: "pointer" }}>
+              {editId ? "Update Product" : "Save Product"}
+            </button>
           </form>
         </div>
       )}

@@ -107,3 +107,23 @@ exports.deleteOrder = async (req, res) => {
         });
     }
 };
+
+exports.cancelOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        if (order.user.toString() !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized to cancel this order" });
+        }
+        if (order.orderStatus === "Shipped" || order.orderStatus === "Delivered") {
+            return res.status(400).json({ message: "Order already shipped or delivered" });
+        }
+        order.orderStatus = "Cancelled";
+        await order.save();
+        res.status(200).json({ message: "Order cancelled successfully", order });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

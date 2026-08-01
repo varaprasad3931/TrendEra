@@ -6,7 +6,8 @@ const {
     getOrderById,
     getMyOrders,
     updateOrderStatus,
-    deleteOrder
+    deleteOrder,
+    cancelOrder
 } = require("../controllers/orderController");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
@@ -15,6 +16,7 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 router.post("/", authMiddleware, placeOrder);
 router.get("/myorders", authMiddleware, getMyOrders);
 router.get("/:id", authMiddleware, getOrderById);
+router.put("/:id/cancel", authMiddleware, cancelOrder);
 
 // Admin routes
 router.get("/", authMiddleware, adminMiddleware, getOrders);

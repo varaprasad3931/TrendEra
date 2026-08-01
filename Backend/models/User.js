@@ -21,6 +21,20 @@ const userSchema = new mongoose.Schema(
     role: {
         type: String,
         default: "user"
+    },
+
+    loginAttempts: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+
+    lockUntil: {
+        type: Date
+    },
+
+    twoFactorSecret: {
+        type: String
     }
 },
 {

@@ -4,8 +4,13 @@ exports.getReviews = async (req, res) => {
 
     try {
 
+        let query = {};
+        if (req.query.productId) {
+            query.product = req.query.productId;
+        }
+
         const reviews =
-            await Review.find()
+            await Review.find(query)
             .populate("user")
             .populate("product");
 

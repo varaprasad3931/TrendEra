@@ -1,0 +1,53 @@
+const mongoose = require("mongoose");
+
+const supportTicketSchema = new mongoose.Schema(
+{
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    subject: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ["Open", "In Progress", "Resolved"],
+        default: "Open"
+    },
+    replies: [
+        {
+            sender: {
+                type: String,
+                enum: ["user", "support"],
+                required: true
+            },
+            text: {
+                type: String,
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]
+},
+{
+    timestamps: true
+});
+
+module.exports = mongoose.model("SupportTicket", supportTicketSchema);
